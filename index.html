@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link href="styles.css" rel="stylesheet" />
+    <script src="script.js" defer></script>
+</head>
+<body id="body">
+    <button type="button" class="reset"><img src="svg/reset.svg" /> </button>
+    <button type="button" class="menu"><img src="svg/burger.svg" /> </button>
+    
+    <div class="scoreboardContainer">
+        <img class="collapse" src="svg/collapse.svg" />
+        <div class="SBIcons">
+            <img src="svg/heart.svg" />
+            <img src="svg/rose.svg" />
+        </div>
+        <div class="SBScores">
+            <div class="heartScore">
+                <p>0</p>
+            </div>
+            <div class="roseScore">
+                <p>0</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="title">
+        <h1>-Tic-Tac-Toe-</h1>
+    </div>
+
+    <div class="playerSelectBTN DIVLoadTrans">
+        <button type="button" class="PVP"><img src="svg/person.svg" /> vs. <img src="svg/person.svg" /></button>
+        <button type="button" class="PVC"><img src="svg/person.svg" /> vs. <img src="svg/robot.svg" /></button>
+    </div>
+
+    <div class="iconSelectBTN">
+        <button type="button" class="heart"><img src="svg/heart.svg" /></button>
+        <button type="button" class="rose"><img src="svg/rose.svg" /></button>
+    </div>
+
+    <div class="playStartBTN">
+        <button type="button" class="play"><span>Play</span></button>
+    </div>
+
+    <div class="breakLine"><p>------------------</p></div>
+
+    <div class="gameboard">
+        <div class="tile" id="00"></div>
+        <div class="tile" id="01"></div>
+        <div class="tile" id="02"></div>
+        <div class="tile" id="10"></div>
+        <div class="tile" id="11"></div>
+        <div class="tile" id="12"></div>
+        <div class="tile" id="20"></div>
+        <div class="tile" id="21"></div>
+        <div class="tile" id="22"></div>
+    
+        <div class="line vLineOne lineHidden"></div>
+        <div class="line vLineTwo lineHidden"></div>
+        <div class="line hLineOne lineHidden"></div>
+        <div class="line hLineTwo lineHidden"></div>
+    </div>
+</body>
+</html>

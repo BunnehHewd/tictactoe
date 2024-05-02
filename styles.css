@@ -1,0 +1,311 @@
+* {
+    margin: 0 auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: overlay;
+}
+
+body {
+    background-color: #DBAFA0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@font-face {
+    font-family: Romance;
+    src: url("AffFont/Affectionately\ Yours\ -\ TTF.ttf");
+}
+
+@font-face {
+    font-family: DigBubble;
+    src: url("bazaronite/Bazaronite.ttf");
+}
+
+/* Title */
+.title, .breakLine {
+    margin-top: 2rem;
+    font-family: Romance;
+    font-size: 5rem;
+    color: #704264;
+    text-shadow: 3px 3px 3px rgba(0,0,0,0.25);
+}
+
+.breakLine {
+    margin: 0;
+    height: 50px;
+    display: flex;
+    align-items: flex-end;
+}
+
+/* Buttons */
+.playerSelectBTN, .iconSelectBTN, .playStartBTN, .playerTurnIcon {
+    display: flex;
+    justify-content: space-between;
+    width: 30rem;
+    height: 4.5rem; 
+}
+
+.iconSelectBTN, .playStartBTN {
+    height: 0;
+}
+
+.DIVLoadTrans{
+    transition: height 1s;
+}
+
+.DIVUnloadTrans {
+    opacity: 0;
+    height: 0;
+    transition: opacity 1s, height 2s;
+}
+
+.iconSelectBTN, .playStartBTN {
+    margin-top: 10px;
+}
+
+
+.PVP, .PVC, .heart, .rose, .play, .playerTurnIcon img {
+    display: flex;
+    align-items: center;
+    font-family: Romance;
+    font-size: 4rem;
+    color: #704264;
+    background-color: #BB8493;
+    width: 40%;
+    height: 90%;
+    box-shadow: 3px 3px 4px  0 rgba(0,0,0,0.30);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.5s, box-shadow 0.5s;
+    overflow: hidden;
+}
+
+.playerTurnIconHidden, .playerTurnIcon img {
+    height: 0;
+    opacity: 0;
+}
+
+.playerTurnIcon, .playerTurnIcon img {
+    cursor: none;
+    height: 4.5rem;
+    opacity: 100%;
+    transition-delay: 5s;
+    transition: opacity 6s, height 2s;
+}
+
+.heart, .rose {
+    display: none;
+    width: 18%;
+}
+
+.play {
+    display: none;
+}
+
+.play span {
+    font-size: 3rem;
+}
+
+.PVP img, .PVC img, .heart img, .rose img {
+    width: 2.5rem;
+}
+
+.PVP:hover, .PVC:hover, .heart:hover, .rose:hover, .play:hover {
+    background-color: #ce98a6;
+    transform: translateY(-5px);
+    box-shadow: 8px 8px 4px 0 rgba(0,0,0,0.15);
+    transition: transform 0.5s, box-shadow 0.5s;
+}
+
+.PVP:active, .PVC:active, .heart:active, .rose:active, .play:active {
+    transform: translateY(0px);
+    box-shadow: 3px 3px 4px  0 rgba(0,0,0,0.30);
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.selectedBTN { 
+    background-color: #ce98a6; 
+    border: 2px dashed #704264;
+}
+
+.notSelectedBTN {
+    opacity: 60%;
+}
+
+.reset, .menu {
+    background-color: transparent;
+    border: none;
+    position: absolute;
+}
+
+.reset {
+    right: 3%;
+    top: 3%;
+}
+
+.menu {
+    left: 2%;
+    top: 2%;
+}
+
+.menu img {
+    width: 4rem;
+    cursor: pointer;
+}
+
+.reset img {
+    width: 3rem;
+    cursor: pointer;
+    transition: transform 3s;
+}
+
+.reset img:hover {
+    transform: rotate(360deg);
+    filter: brightness(0) saturate(100%) invert(13%) sepia(16%) saturate(2166%) hue-rotate(265deg) brightness(98%) contrast(88%);
+    transition: transform 5s;
+}
+
+/* GAMEBOARD */
+.gameboard {
+    position: relative;
+    height: 45rem;
+    width: 45rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+.line {
+    position: absolute;
+    border-radius: 5px;
+    background-color: #49243E;
+}
+
+.vLineOne, .vLineTwo {
+    width: 4px;
+    height: 45rem;
+    transition: height 2s;
+}
+
+.vLineOne {
+    transition-delay: 2.8s;
+    left: 33%;
+}
+
+.vLineTwo {
+    transition-delay: 2.2s;
+    left: 66%;
+}
+
+.hLineOne, .hLineTwo {
+    height: 4px;
+    width: 45rem;
+    transition: width 2s;
+}
+
+.hLineOne {
+    transition-delay: 1.8s;
+    top: 33%;
+}
+
+.hLineTwo {
+    transition-delay: 2.3s;
+    top: 66%;
+}
+
+.lineHidden {
+    width: 0;
+    height: 0;
+}
+
+.tile {
+    overflow: hidden;
+    /* border: 1px solid black; */
+    width: 95%;
+    height: 95%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tile img {
+    width: 75%;
+}
+
+
+/* WIN STUFF */
+
+.winLine {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    height: 5px;
+    background-color: #ce98a6;
+    opacity: 75%;
+    transform-origin: left top;
+}
+
+/* SCORECARD */
+
+.scoreboardContainer {
+    display: none;
+    left: 2%;
+    top: 2%;
+    position: absolute;
+    width: 50rem;
+    height: 35rem;
+    flex-direction: column;
+    background-color: #BB8493;
+    box-shadow: 3px 3px 4px  0 rgba(0,0,0,0.30);
+    border-radius: 5px;
+}
+
+.scoreboardContainer img {
+    width: 10rem;
+    filter: drop-shadow(3px 3px 4px rgba(0,0,0,0.30));
+}
+
+.scoreboardContainer .collapse {
+    position: absolute;
+    filter: none;
+    width: 5rem;
+    cursor: pointer;
+}
+
+.SBIcons, .SBScores {
+    margin-top: 5%;
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.heartScore, .roseScore {
+    height: 90%;
+    font-family: DigBubble;
+    font-size: 8rem;
+    color: #704264;
+    width: 12rem;
+    border-radius: 5px;
+    border: 3px solid #cd7c7c;
+    text-align: center;
+    background-color: #dba0a0;
+    box-shadow: inset 0 0 10px 0px rgb(235, 203, 203, 0.5);
+}
+
+.heartScore p, .roseScore p {
+    padding: 20px;
+    width: 100%;
+    margin-left: 5px;
+}
