@@ -16,13 +16,20 @@ winLine.classList.add("winLine");
 const burger = document.querySelector(".menu");
 const scoreMenu = document.querySelector(".scoreboardContainer");
 const collapse = document.querySelector(".collapse");
+const closeWinBanner = document.querySelector(".egClose");
+const endGameBanner = document.querySelector(".endGameBanner");
 
 let PVPON = false;
 let playerIcon = "";
 let currentTurn = "";
-let PlayerTurn = false; // Player 1 in PVP; #1
+let PlayerTurn = false; // Player 1 in PVP; Heart in PVP
 let canClick = false;
 let currentTurnCount = 0;
+let pulseActive = false;
+let gameOver = false;
+
+let heartScore = 0;
+let roseScore = 0;
 
 let board = [
     ["", "" , ""],
@@ -134,11 +141,11 @@ function populatePlayerTurnDiv() { // Initial creation
 
     if (rand == 1) {
         turnIcon.src = "svg/heart.svg";
-        turnIcon.setAttribute("data", "icon: 'heart'");
+        turnIcon.dataset.icon = "heart";
         currentTurn = "Heart";
     } else {
         turnIcon.src = "svg/rose.svg";
-        turnIcon.setAttribute("data", "icon: 'rose'");
+        turnIcon.dataset.icon = "rose";
         currentTurn = "Rose";
     }
 
@@ -166,8 +173,6 @@ function ChangePlayerTurnDiv() {
         turnIcon.src = "svg/heart.svg";   
         turnIcon.setAttribute("data-icon", "heart");
     }
-
-    console.log("icon should chaneg");
 }
 
 function playGame() {
@@ -279,30 +284,75 @@ function AggrOffMove(x, y, c) {
     return tileAggr;
 }
 
+function whoWon() {
+    const heartScoreP = document.querySelector(".hScore");
+    const roseScoreP = document.querySelector(".rScore");
+    stopPulse();
+    gameOver = true;
+    removeTileEvents();
+
+    if (PlayerTurn) {
+        if (playerIcon == "Heart") {
+            showWinBanner("rose");
+            roseScore++;
+            roseScoreP.innerHTML = roseScore;
+        } else {
+            showWinBanner("heart");
+            heartScore++;
+            heartScoreP.innerHTML = heartScore;
+        }
+    } else {
+        if (playerIcon == "Heart") {
+            showWinBanner("heart");
+            heartScore++;
+            heartScoreP.innerHTML = heartScore;
+        } else {
+            showWinBanner("rose");
+            roseScore++;
+            roseScoreP.innerHTML = roseScore;
+        }
+    }
+
+}
+
+function showWinBanner(winner) {
+    const winBanner = document.querySelector(".winTop");
+    winBanner.innerHTML = winner;
+    endGameBanner.style.display = "flex";
+
+}
+
 function CheckForWins() {
+    
     // Diagonals
     if (board[1][1] != "") {
         // \
         if(board[0][0] == board[1][1] && board[0][0] == board[2][2]) {
             winLine.style.transform = "rotate(45deg)";
             winLine.style.width = "125%";
+            winLine.style.height = "5px";
+            winLine.style.display = "block";
             container.append(winLine);
-
+            whoWon();
             return;
                 // /
         } else if (board[0][2] == board[1][1] && board[0][2] == board[2][0]) {
-            winLine.style.transform = "rotate(-45deg)" ;
+            winLine.style.transform = "rotate(-45deg)";
             winLine.style.top = "94%";
             winLine.style.width = "125%";
+            winLine.style.height = "5px";
+            winLine.style.display = "block";
             container.append(winLine);
+            whoWon();
             return;
-            alert("winner");
         }
     }
 
     // Horizontals
     for (var i = 0; i < 3; i++) {
         if (board[i][0] == board [i][1] && board[i][1] == board[i][2] && board[i][2] != "") {
+            winLine.style.height = "5px";
+            winLine.style.width = "90%";
 
             if (i == 0) {
                 winLine.style.top = "7rem";
@@ -311,9 +361,9 @@ function CheckForWins() {
             } else {
                 winLine.style.top = "37rem";
             }
-            
-            
+            winLine.style.display = "block";
             container.append(winLine);
+            whoWon();
             return;
         }
     }
@@ -331,8 +381,9 @@ function CheckForWins() {
             } else {
                 winLine.style.left = "37rem";
             }
-            
+            winLine.style.display = "block";
             container.append(winLine);
+            whoWon();
             return;
         }
     }
@@ -340,17 +391,76 @@ function CheckForWins() {
 
 
 /* TILES */
+
+let resetTimerId;
+let timeoutIds = [];
+
 const clickE = (e) => {
     if (canClick || PVPON) {
         iconClick(e.target);
         e.target.removeEventListener("click", clickE); 
+
+        resetPulseTimer();
     }
 };
 
 function createTileEvents() {
     tile.forEach((tile) => {
         tile.addEventListener("click", clickE);
+    
+        pulseActive = true; 
+    
+        tile.style.transitionDelay = "20s";
+
+        removeDelay(tile);
+
+        if (pulseActive) {
+            startPulsing(tile);
+        }
     });
+}
+
+function removeDelay(tile) {
+    setTimeout(() => {
+        console.log("remove");
+        tile.style.transitionDelay = "0s";
+    }, 20000);
+}
+
+function resetPulseTimer() {
+    clearTimeout(resetTimerId);
+
+    resetTimerId = setTimeout(() => {
+        pulseActive = true;
+        tile.forEach((tile) => {
+            if (pulseActive && !gameOver) {
+                startPulsing(tile); 
+            }
+        });
+    }, 20000); 
+}
+
+function startPulsing(tile) {
+    const pulse = () => {
+        if (!pulseActive) return; 
+
+        if (tile.children.length == 0) {
+            tile.classList.remove("tileInnerOverride");
+            tile.classList.add("tileInner");  
+        }
+
+
+        const outer = setTimeout(() => {
+            tile.classList.remove("tileInner");
+
+            const inner = setTimeout(pulse, 2000);
+            timeoutIds.push(inner); 
+        }, 2000); 
+
+        timeoutIds.push(outer);
+    };
+
+    pulse(); 
 }
 
 function removeTileEvents() {
@@ -359,9 +469,23 @@ function removeTileEvents() {
     });
 }
 
+function stopPulse() {
+    pulseActive = false;
+
+    timeoutIds.forEach((id) => clearTimeout(id));
+    timeoutIds = [];
+
+    tile.forEach((tile) => {
+        tile.classList.add("tileInnerOverride");
+        tile.classList.remove("tileInner");
+    });
+}
 
 
 function iconClick(tile) {
+
+    stopPulse();
+
         const icon = document.createElement("img");
         icon.classList.add("tileIconadded");
 
@@ -397,16 +521,15 @@ function iconClick(tile) {
             CheckForWins();
         }
 
+        if (!gameOver) {
+            ChangePlayerTurnDiv();
 
-        ChangePlayerTurnDiv();
-
-        if (!PVPON && !PlayerTurn) {
-
-            setTimeout(() => {
-              CompAI();  
-            }, 3000);
+            if (!PVPON && !PlayerTurn) {
+                setTimeout(() => {
+                CompAI();  
+                }, 3000);
+            }
         }
-
 }
 
 function alterBoard(tileNumber) {
@@ -434,6 +557,12 @@ resetBTN.addEventListener("click", () => {
     removeTileIcons();
     currentTurnCount = 0;
     createTileEvents();
+    ChangePlayerTurnDiv();
+    gameOver = false;
+    winLine.style.display="none";
+    winLine.style.top = "5%";
+    winLine.style.left= "5%";
+    winLine.style.transform = "rotate(0deg)";
 });
 
 function removeTileIcons() {
@@ -454,4 +583,10 @@ collapse.addEventListener("click", hideScore);
 
 function hideScore() {
     scoreMenu.style.display = "none";
+}
+
+closeWinBanner.addEventListener("click", closeBanner);
+
+function closeBanner() {
+    endGameBanner.style.display = "none";
 }
