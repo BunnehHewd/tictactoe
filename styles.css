@@ -348,3 +348,22 @@ body {
     justify-content: center;
     font-size: 3rem;
 }
+
+.winImg {
+    width: 10rem;
+}
+
+.winTop  {
+    display: flex;
+    justify-content: space-around;
+    height: 50%;
+    width: 40%;
+    align-items: center;
+    background: radial-gradient(circle, rgba(168,129,140,0.6587009803921569) 0%, rgba(187,132,147,0) 80%);
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+.winTop span {
+    width: 20%;
+}
