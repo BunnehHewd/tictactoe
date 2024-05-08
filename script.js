@@ -210,27 +210,65 @@ function CompAI() {
         }
     }
 
-
     if (board[1][1] == "") { // Center
         const tileE = document.getElementById("11");
         iconClick(tileE);
         return;
     }
 
-    if (board[0][0] == "") { // Upper Left
-        const tileE = document.getElementById("00");
-        iconClick(tileE);
-        return;
+    const rand = getRandomNumber(1,4);
+
+    if (rand == 1) {
+        if (board[0][0] == "") { // Upper Left
+            const tileE = document.getElementById("00");
+            iconClick(tileE);
+            return;
+        }
+    }
+
+    if (rand == 2) {
+        if (board[0][2] == "") { // Upper Right
+            const tileE = document.getElementById("02");
+            iconClick(tileE);
+            return;
+        }
+    }
+
+    if (rand == 3) {
+        if (board[2][0] == "") { // Lower Left
+            const tileE = document.getElementById("20");
+            iconClick(tileE);
+            return;
+        }
+    }
+
+    if (rand == 4) {
+        if (board[2][2] == "") { // Lower Right
+            const tileE = document.getElementById("22");
+            iconClick(tileE);
+            return;
+        }
     }
     
+    for (var i = 0; i < 3; i++) { // Failsafe
+        for (var j = 0; j < 3; j++) {
+            if (board[i][j] == "") {
+                let found = x.toString() + y.toString();
+                const tileE = document.getElementById(found);
+                iconClick(tileE);
+                return;
+            }
+        }
+    }
+    resetPulseTimer();
+    TieBanner();
 }
 
 function AggrOffMove(x, y, c) {
     let tileAggr = -1;
     let found = "";
 
-    // Check Diags
-      
+    // Check Diags     
         if ((x == 0 && y == 0) ||
             (x == 2 && y == 2) || 
             (x == 1 && y == 1)) {
@@ -240,7 +278,7 @@ function AggrOffMove(x, y, c) {
                         found = x.toString() + y.toString();
                         tileAggr = document.getElementById(found);
                         iconClick(tileAggr);
-                        return;
+                        return (1);
                     }
                 }
 
@@ -253,7 +291,7 @@ function AggrOffMove(x, y, c) {
                         found = x.toString() + y.toString();
                         tileAggr = document.getElementById(found);
                         iconClick(tileAggr);
-                        return;
+                        return (1);
                     }
             }
     
@@ -262,23 +300,20 @@ function AggrOffMove(x, y, c) {
     if ((board[x][0] == c && board[x][1] == c) ||
         (board[x][0] == c && board[x][2] == c) ||
         (board[x][1] == c && board[x][2] == c)) {
-
-
             found = x.toString() + y.toString();
             tileAggr = document.getElementById(found);
             iconClick(tileAggr);
-            return;
+            return (1);
         }
 
     // Check Verticals
     if ((board[0][y] == c && board[1][y] == c) ||
         (board[0][y] == c && board[2][y] == c) ||
         (board[1][y] == c && board[2][y] == c)) {
-
             found = x.toString() + y.toString();
             tileAggr = document.getElementById(found);
             iconClick(tileAggr);
-            return;
+            return (1);
         }
 
     return tileAggr;
@@ -312,14 +347,38 @@ function whoWon() {
             roseScoreP.innerHTML = roseScore;
         }
     }
+}
 
+function TieBanner() {
+    stopPulse();
+    gameOver = true;
+    removeTileEvents();
+    showWinBanner("tie");
 }
 
 function showWinBanner(winner) {
     const winBanner = document.querySelector(".winTop");
-    winBanner.innerHTML = winner;
-    endGameBanner.style.display = "flex";
 
+    while (winBanner.firstChild) {
+        winBanner.removeChild(winBanner.firstChild);
+    }
+
+    const winImg = document.createElement("img");
+    const winsText = document.createElement("span");
+    winsText.innerHTML = " wins!";
+    winImg.classList.add("winImg");
+    if (winner == "rose") {
+        winImg.src = "svg/rose.svg";
+        winBanner.appendChild(winImg);
+    } else if (winner == "heart") {
+        winImg.src = "svg/heart.svg";
+        winBanner.appendChild(winImg);
+    } else {
+        winsText.innerHTML = "Tie!";
+    }
+
+    winBanner.appendChild(winsText);
+    endGameBanner.style.display = "flex";
 }
 
 function CheckForWins() {
@@ -499,6 +558,10 @@ function iconClick(tile) {
             } else {
                 icon.src = "svg/rose.svg";
             }
+            tile.appendChild(icon);
+            var number = tile.id;
+            alterBoard(number);
+
             PlayerTurn = false;
             canClick = false;
         } else {
@@ -507,18 +570,21 @@ function iconClick(tile) {
             } else {
                 icon.src = "svg/heart.svg";
             }
+            tile.appendChild(icon);
+            var number = tile.id;
+            alterBoard(number);
+
             PlayerTurn = true;
             canClick = true;
     }
-
-        tile.appendChild(icon);
-        var number = tile.id;
-        alterBoard(number);
         currentTurnCount++;
-
 
         if (currentTurnCount >= 5) {
             CheckForWins();
+
+            if (currentTurnCount == 9) {
+                TieBanner();
+            }
         }
 
         if (!gameOver) {
@@ -548,6 +614,10 @@ function alterBoard(tileNumber) {
 }
 
 resetBTN.addEventListener("click", () => {
+    reset();
+});
+
+function reset() {
     board = [
         ["", "" , ""],
         ["", "" , ""],
@@ -563,7 +633,9 @@ resetBTN.addEventListener("click", () => {
     winLine.style.top = "5%";
     winLine.style.left= "5%";
     winLine.style.transform = "rotate(0deg)";
-});
+}
+
+
 
 function removeTileIcons() {
     tile.forEach((tile) => {
@@ -589,4 +661,11 @@ closeWinBanner.addEventListener("click", closeBanner);
 
 function closeBanner() {
     endGameBanner.style.display = "none";
+}
+
+const pAgain = document.querySelector(".pAgain");
+pAgain.addEventListener("click", playAgain);
+function playAgain() {
+    endGameBanner.style.display = "none";
+    reset();
 }
